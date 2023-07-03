@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>bookload</title>
+    <style>
+        .container-list
+        {
+            display: flex;
+            flex-direction:column;
+        }
+        .cont
+        {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction:column;
+            justify-content: center;
+            align-content:center;
+            gap:10px;
+
+        }
+        .book-now {
+  background-color: #0002A1; /* Change the background color to your desired color */
+  border: none;
+  color: white;
+  width:200px;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease-in-out;
+}
+
+.book-now:hover {
+  background-color: #3e8e41; /* Change the background color to your desired hover color */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="container-list">
+        <div class="cont">
+         <%cities.map((city)=> { %>
+        <div class="container">
+            <div class="book-container">
+              <a href="/getfuelprice/<%=state%>/<%=city.cityId%>"><button class="book-now"><%=city.cityName %></button></a>
+            </div>
+        </div>
+        <% }) %>
+
+      </div>
+        
+       
+      </div>
+      
+</body>

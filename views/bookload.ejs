@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>bookload</title>
+    <link rel="stylesheet" href="/css/bookload.css">
+</head>
+<body>
+  <div class="container-list">
+    <div class="form-selection">
+    <form action="/filtertruck" method="post">
+      <h1>search by location</h1>
+        <label for="fromlocation">from location:</label>
+        <input type="text" id="name" name="fromlocation" onchange="this.value = this.value.toUpperCase()">
+        
+        <label for="tolocation">to location:</label>
+        <input type="text" id="email" name="tolocation" onchange="this.value = this.value.toUpperCase()">
+        
+        <input type="submit" value="Submit">
+    </form>
+    </div>
+      <div class="cont">
+       <%loads.map((load)=> { %>
+      <div class="container">
+       <div  class="conupper">
+        <div class="container-header">
+              <h2>Container 1</h2>
+        </div>
+        <div class="container-body">
+              <div class="location">
+                <p><strong>From:</strong><%= load.fromlocation %></p>
+                <p><strong>To     :</strong> <%= load.tolocation %></p>
+              </div>
+              <div class="load">
+                <p><strong>LOAD TYPE:</strong><%= load.loadtype %></p>
+              </div>
+              <div class="load">
+                <p><strong>QUANTITY:</strong> <%= load.quantity %></p>
+              </div>
+              <div class="price">
+                <p><strong>PRICE</strong> <%= load.price %></p>
+              </div>
+          </div>
+         </div>
+          <div class="book-container">
+            <a href="/contact/<%=load.phone%>"><button class="book-now">Book Now</button></a>
+          </div>
+      </div>
+      <% }) %>
+
+    </div>
+      
+     
+    </div>
+    
+</body>

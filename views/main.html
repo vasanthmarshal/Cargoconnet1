@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hello SMT Transport</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f2f2f2;
+		}
+		h1 {
+			text-align: center;
+			margin-top: 50px;
+		}
+		.cont{
+			background-image: url("../images/mainbackground.jpg");
+			background-size: cover;
+			height:100vh;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center; 
+		}
+		.container {
+			height:300px;
+			width:400px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center; 
+			border:3px solid #865DFF;
+			box-shadow: 0 0 10px black;
+			border-radius: 10px;
+			background-color: transparent;
+			background-color: rgba(255, 255, 255, 0.5);
+			backdrop-filter: blur(5px);
+		}
+		button {
+			padding: 10px 20px;
+			border: none;
+			border-radius: 5px;
+			background-color: #4CAF50;
+			color: white;
+			font-size: 16px;
+			cursor: pointer;
+			margin-bottom: 20px;
+		}
+		button:hover {
+			background-color: #3e8e41;
+		}
+	</style>
+</head>
+<body>
+	<div class="cont">
+		<div class="container">
+			<div>
+				<h1>Hello SMT Transport</h1>
+			</div>
+			<div>
+                <a href="/signup"><button id="signup-btn">Sign Up</button></a>
+			</div>
+			<div>
+				<a href="/login"><button id="login-btn">Login</button></a>
+			</div>
+		</div>
+	</div>
+	<script>
+		// Add functionality to the login button
+		document.getElementById("login-btn").addEventListener("click", function() {
+			windows.location.href = "/login";
+		});
+
+		// Add functionality to the signup button
+		document.getElementById("signup-btn").addEventListener("click", function() {
+			// TODO: Add signup functionality
+            windows.location.href = "/signup";
+		});
+	</script>
+</body>
+</html>

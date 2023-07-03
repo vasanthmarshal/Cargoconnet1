@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>project1</title>
+    <link rel="stylesheet" href="/css/booking.css">
+</head>
+<body>
+    <div class="loginform">
+        <div class="container">
+        <form action="/postload" method="post">
+         <!--
+            fromloc
+            toloc
+            loadtype
+            quantity
+            price
+            description
+            phone
+            
+         -->
+         <h2>Post Load form</h2>
+          <label for="fromloc">From Location</label>
+          <br>
+          <input class="fromloc" type="text" id="fromloc" name="fromloc" placeholder="Enter from location" onchange="this.value = this.value.toUpperCase()">
+          <br>
+
+          <label for="toloc">To location</label>
+          <br>
+          <input class="toloc" type="text" id="toloc" name="toloc" placeholder="Enter to location" onchange="this.value = this.value.toUpperCase()">
+          <br>
+
+          <label for="loadtype">Load Type</label>
+          <br>
+          <input class="loadtype" type="text" id="loadtype" name="loadtype" placeholder="Enter Load Type" onchange="this.value = this.value.toUpperCase()">
+          <br>
+
+          <label for="quantity">Quantity(in tonnes)</label>
+          <br>
+          <input class="quantity" type="text" id="quantity" name="quantity" placeholder="Enter Load Type" onchange="this.value = this.value.toUpperCase()">
+          <br>
+
+          <label for="price">Price</label>
+          <br>
+          <input class="price" type="text" id="price" name="price" placeholder="Enter Price in rupees" onchange="this.value = this.value.toUpperCase()">
+          <br>
+
+          <label for="description">Description</label>
+          <br>
+          <textarea class="description" type="text" id="description" name="description" placeholder="enter description" onchange="this.value = this.value.toUpperCase()" rows="5"></textarea>
+          <br>
+
+          <label for="phone">Phone Number</label>
+          <br>
+          <input class="phone" type="text" id="phone" name="phone" placeholder="Enter The Phone Number" onchange="this.value = this.value.toUpperCase()">
+          <br>
+
+          <input class="btn btn-2" type="submit" value="Submit" id="btn1">
+        </form>
+              
+        </div>    
+    </div>
+    
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>project1</title>
+    <link rel="stylesheet" href="/css/booking.css">
+</head>
+<body>
+    <div class="loginform">
+        <div class="container">
+            <form action="/bookloadsmt/<%= id %>" method="post">
+                <h2>Booking form</h2>
+          <label for="fname">First Name</label>
+          <br>
+          <input class="tfname" type="text" id="fname" name="firstname" placeholder="Your name" onchange="this.value = this.value.toUpperCase()">
+          <br>
+          <label for="lname">Last Name</label>
+          <br>
+          <input class="tlname" type="text" id="lname" name="lastname" placeholder="Your last name" oninput="this.value = this.value.toUpperCase()">
+          <br>
+          <label for="email">Email:</label>
+          <br>
+          <input class="temail" type="email" name="email" id="email" placeholder="Enter Email" onchange="this.value = this.value.toLowerCase()">
+          <br>
+          <label for="fname">From Location</label>
+          <br>
+          <input class="tfname" type="text" id="fname" name="fromlocation" placeholder="pick up location...">
+          <br>
+          <label for="lname">To Location</label>
+          <br>
+          <input class="tlname" type="text" id="lname" name="tolocation" placeholder="drop-location...">
+          <br>
+          <label for="vehicle-company">LOAD-CAPACITY(tonnes)</label>
+          <br>
+          <select class="tselect" id="vehicle-company" name="capacity">
+            <option class="select" value="2-3">2-3</option>
+            <option class="select" value="3-4">3-4</option>
+            <option class="select" value="4-5">4-5</option>
+            <option class="select" value="5-6">5-6</option>
+            <option class="select" value="6-7">6-7</option>
+            <option class="select" value="7-8">7-8</option>
+            <option class="select" value="8-9">8-9</option>
+            <option class="select" value="9-10">9-10</option>
+            <option class="select" value="more than 10">more than 10</option>
+          </select>
+          <br>
+          <label for="vehicle-company">vehicle-company</label>
+          <br>
+          <select class="tselect" id="vehicle-company" name="company">
+            <option class="select" value="SML MAZDA">SML MAZDA</option>
+            <option class="select" value="SML MAZDA">TATA</option>
+            <option class="select" value="SML MAZDA">EICHER</option>
+          </select>
+          <br>
+          <label for="vehicle-type">vehicle-type</label>
+          <br>
+          <select class="tselect" id="vehicle-type" name="type">
+            <option class="select" value="Hi-Tech">Hi-Tech</option>
+            <option class="select" value="Normal">Normal</option>
+            <option class="select" value="Low-Tech">Low-Tech</option>
+          </select>
+          <br>
+          <label for="vehicle-length">Vehicle-lengh</label>
+          <br>
+          <select class="tselect" id="vehicle-length" name="length">
+            <option class="select" value="10-feet">10-feet</option>
+            <option class="select" value="11-feet">11-feet</option>
+            <option class="select" value="12-feet">12-feet</option>
+            <option class="select" value="14-feet">14-feet</option>
+            <option class="select" value="17-feet">17-feet</option>
+          </select>
+          <br>
+          <label for="subject">Subject</label>
+          <br>
+          <textarea class="ttextarea" id="subject" name="subject" placeholder="Write something.." style="height:200px"></textarea>
+          <br>
+          <label for="subject">Mobile No</label>
+          <br>
+          <input class="tphoneno" type="tel" name="phone" id="phone_number" placeholder="Enter Phone Number">
+          <br>
+          <input class="btn btn-2" type="submit" value="Submit" id="btn1">
+            </form>
+              
+        </div>    
+    </div>
+    
+
+</body>
+</html>

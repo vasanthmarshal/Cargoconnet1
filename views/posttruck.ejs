@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>project1</title>
+    <link rel="stylesheet" href="/css/booking.css">
+</head>
+<body>
+    <div class="loginform">
+        <div class="container">
+        <!--
+          curloc
+          toloc
+          vehnumber
+          phone
+          vehtype
+          capacity
+        -->
+        <form action="/posttruck" method="post">
+                <h2>Post Truck form</h2>
+          <label for="curtloc">Current location</label>
+          <br>
+          <input class="curloc" type="text" id="curloc" name="curloc" placeholder="Enter Current location" onchange="this.value = this.value.toUpperCase()">
+          <br>
+
+          <label for="Expectedloc">Expected Destination</label>
+          <br>
+          <input class="toloc" type="text" id="toloc" name="toloc" placeholder="Enter to location" onchange="this.value = this.value.toUpperCase()">
+          <br>
+
+          <label for="vehnum">Vehicle Number</label>
+          <br>
+          <input class="vehnum" type="text" id="vehnumber" name="vehnumber" placeholder="Enter The vehicle Number" onchange="this.value = this.value.toUpperCase()">
+          <br>
+
+          <label for="phone">Phone Number</label>
+          <br>
+          <input class="phone" type="text" id="phone" name="phone" placeholder="Enter The Phone Number" onchange="this.value = this.value.toUpperCase()">
+          <br>
+
+          <label for="vehicle-company">Vehicle Type</label>
+          <br>
+          <select class="vehicletype" id="vehicle-type" name="vehtype">
+            <option class="select" value="Mini Van">Mini Van</option>
+            <option class="select" value="Truck">Truck</option>
+            <option class="select" value="Lorry">Lorry</option>
+          </select>
+          <br>
+          
+          <label for="vehicle-type">Enter vehicle capacity</label>
+          <select class="vehicle-capacity" id="vehicle-capacity" name="capacity">
+            <option class="select" value="2-3">2-3</option>
+            <option class="select" value="3-4">3-4</option>
+            <option class="select" value="4-5">4-5</option>
+            <option class="select" value="5-6">5-6</option>
+            <option class="select" value="6-7">6-7</option>
+            <option class="select" value="7-8">7-8</option>
+            <option class="select" value="8-9">8-9</option>
+            <option class="select" value="9-10">9-10</option>
+            <option class="select" value="more than 20">more than 10</option>
+          </select>
+          <br>
+ 
+          <input class="btn btn-2" type="submit" value="Submit" id="btn1">
+        </form>
+              
+        </div>    
+    </div>
+    
+
+</body>
+</html>

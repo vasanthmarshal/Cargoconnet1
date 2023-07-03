@@ -1,0 +1,136 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.container-list
+{
+  display: flex;
+  flex-direction: column;
+  background-color:black;
+  align-items: center;
+}
+.form-selection
+{
+  background-image: url("../images/searchbackground.jpg");
+  width:50%;
+  margin-top:50px;
+  border: 1px solid black;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  padding-bottom: 20px;;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: 0 auto;
+  color:#ccc;
+}
+
+label {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+input[type="text"], input[type="email"] {
+  padding: 8px;
+  margin-bottom: 20px;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  font-size: 16px;
+}
+
+input[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: #3e8e41;
+}
+.cont {
+  
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:space-around;
+  }
+  
+  .container {
+    margin: 20px;
+    padding: 10px;
+    color:azure;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    width: 300px;
+    background-color:#3C79F5;
+  }
+  
+  .container-header {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .container-body
+  {
+    dispaly:flex;
+    flex-direction:column;
+  }
+  
+  .container-header h2 {
+    font-size: 24px;
+    margin: 0;
+  }
+  
+  .location, .load, .price, .info {
+    margin-bottom: 10px;
+  }
+  
+  .location p, .load p, .price p, .info p {
+    margin: 0;
+  }
+  
+  .location strong, .load strong, .price strong {
+    margin-right: 5px;
+    font-weight: bold;
+  }
+  
+  .info p {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .book-container
+  {
+    display:flex;
+    justify-content:flex-end;
+  }
+  
+  .book-now {
+    background-color: #0002A1; /* Change the background color to your desired color */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .book-now:hover {
+    background-color: #3e8e41; /* Change the background color to your desired hover color */
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  

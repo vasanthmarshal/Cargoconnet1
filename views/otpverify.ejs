@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>project1</title>
+    <link rel="stylesheet" href="/css/otpverify.css">
+</head>
+<body>
+    <form action="/otpverify" method="post" >
+      <div class="cont">
+        <div class="container">
+        <label for="text">Enter the otp received through messsage</label>
+        <div class="otp-input">
+          <input type="text" maxlength="1" pattern="\d" name="text1" />
+          <input type="text" maxlength="1" pattern="\d" name="text2" />
+          <input type="text" maxlength="1" pattern="\d" name="text3" />
+          <input type="text" maxlength="1" pattern="\d" name="text4" />
+        </div>
+        <div>
+        <button type="submit">Submit</button>
+        </div>
+        <div>
+          <a href="/otpverify" class="link">resend otp</a>
+        </div>
+        </div>
+      </div>
+      </form>
+      
+</body>

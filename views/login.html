@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login Form</title>
+    <style>
+      /* Form styles */
+      .cont{
+			background-image: url("../images/login1background.jpg");
+      background-size: cover;
+			height:100vh;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center; 
+		}
+		.container {
+			height:300px;
+			width:400px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center; 
+			border:3px solid #865DFF;
+			box-shadow: 0 0 10px black;
+			border-radius: 10px;
+			background-color: transparent;
+			background-color: rgba(255, 255, 255, 0.5);
+			backdrop-filter: blur(5px);
+		}
+    .forgot-password{
+      margin-left: 145px;
+      margin-bottom:10px;
+    }
+      
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      
+      input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+
+      input[type="text"]
+        {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+        font-size: 16px;
+      }
+      
+      button[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-bottom: 20px;
+      }
+      
+      button[type="submit"]:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/login" method="post">
+    <div class="cont">
+      <div class="container">
+        <div>
+          <h1>LOGIN FORM</h1>
+        </div>
+        <div>
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <div class="forgot-password">
+          <div>
+            <a href="/forgotusername">Forgot Username</a>
+          </div>
+        </div>
+        <div class="forgot-password">
+        <div>
+          <a href="/forgotpasswordotp">Forgot Password</a>
+        </div>
+      </div>
+        <div>
+          <button type="submit">Log In</button>
+        </div>
+
+      </div>
+    </div>
+    </form> 
+  </body>
+</html>

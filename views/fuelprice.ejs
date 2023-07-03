@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Fuel prices</title>
+    <link rel="stylesheet" href="/css/fuelprice.css">
+</head>
+<body>
+  <div class="container-list">
+      <div class="form-selection">
+         <div>
+           <h1>
+           STATE :<%= data.stateId %>
+           </h1>
+         </div>
+         <div>
+          <h1>
+            CITY : <%= data.cityId %>
+            </h1>
+         </div>
+         <div>
+          <h1>
+            DATE : <%= data.applicableOn %>
+            </h1>
+         </div>
+      </div>
+      <div class="cont">
+         
+                <div class="container">
+                  <div class="container-header">
+                        <h2 style="color:#F97B22">Petrol</h2>
+                        <h2></h2>
+                  </div>
+                  <div class="container-body">
+                        <div class="location">
+                          <p><strong>retailPrice  :</strong><%= data.fuel.petrol.retailPrice %></p>
+                          <p><strong>retailPriceChange  :</strong> <%= data.fuel.petrol.retailPriceChange %></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="container-header">
+                          <h2 style="color:#F97B22">Diesel</h2>
+                    </div>
+                    <div class="container-body">
+                          <div class="location">
+                            <p><strong>retailPrice :</strong><%= data.fuel.diesel.retailPrice %></p>
+                            <p><strong>retailPriceChange :</strong> <%= data.fuel.diesel.retailPriceChange %></p>
+                          </div>
+                    </div>
+                </div>
+
+
+                <div class="container">
+                      <div class="container-header">
+                            <h2 style="color:#F97B22">CNG</h2>
+                      </div>
+                      <div class="container-body">
+                            <div class="location">
+                              <p><strong>retailPrice  :</strong>---</p>
+                              <p><strong>retailPriceChange  :</strong> ---</p>
+                            </div>
+                        </div>
+                  </div>
+
+                  <div class="container">
+                        <div class="container-header">
+                              <h2 style="color:#F97B22">LPG</h2>
+                        </div>
+                        <div class="container-body">
+                              <div class="location">
+                                <p><strong>retailPrice  :</strong><%= data.fuel.lpg.retailPrice %></p>
+                                <p><strong>retailPriceChange  :</strong> <%= data.fuel.lpg.retailPriceChange %></p>
+                              </div>
+                          </div>
+                    </div>
+
+
+
+      </div>
+        
+       
+  </div>
+      
+</body>
