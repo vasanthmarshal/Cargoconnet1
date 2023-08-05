@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Information</title>
+    <style>
+        body {
+            background-image: url("../images/weatherbackground1.jpeg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #FFD700; /* Golden yellow background color */
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 50px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .weather-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+        }
+        .weather-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .weather-main {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .weather-description {
+            font-size: 18px;
+        }
+        .weather-info {
+            font-size: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
+            align-items: flex-start;
+        }
+        .location {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+    
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="location">Weather in Chennai</div>
+        <div class="weather-details">
+            <div class="weather-main"><%=weather.weather.main%></div>
+            <div class="weather-icon"><img src="https://openweathermap.org/img/w/50n.png" alt="Weather Icon"></div>
+        </div>
+        <div class="weather-description">Mist</div>
+        <div class="weather-info">
+            <div>Temperature:<%= weather.main.temp%>°C</div>
+            <div>Feels Like:<%= weather.main.feels_like%>°C</div>
+            <div>Humidity: <%= weather.main.humidity%>%</div>
+            <div>Wind Speed:<%= weather.wind.speed%>km/h</div>
+            <div>Pressure: <%= weather.main.pressure%>hPa</div>
+            <div>Visibility: <%=weather.visibility%>meters</div>
+        </div>
+    </div>
+</body>
+</html>
