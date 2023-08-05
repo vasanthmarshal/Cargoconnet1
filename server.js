@@ -681,7 +681,7 @@ const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&ap
 
 axios.get(apiUrl)
   .then(response => {
-    res.send(response.data);
+    res.render("weather",{weather:response.data});
   })
   .catch(error => {
     console.log(error);
