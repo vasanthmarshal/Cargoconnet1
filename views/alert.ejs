@@ -53,12 +53,12 @@
   <div class="alert">
     <h1>Alert!</h1>
     <p><%=message%></p>
-    <a href="/login"><button type="button">OK</button></a>
-    <% if (message) { %>
-      <script>
-        alert('<%= message %>');
-      </script>
-    <% } %>
+    <a href="/<%=`${route}`%>"><button type="button">OK</button></a>
+    <!--<% if (message) { %>
+    // <script>
+    //    alert('<%= message %>');
+    //  </script>
+    <% } %>-->
   </div>
 </body>
 </html>
