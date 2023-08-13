@@ -569,13 +569,20 @@ app.get('/index/:id',(req, res) => {
 
   //starting of bboking a load
   app.get("/bookload",async(req,res)=>{
-
+    try{
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const loads = await PostLoad.find({ createdAt: { $gte: sevenDaysAgo } });
     const user=req.cookies.userdata;
-    const  data=JSON.parse(user);
+    const data=JSON.parse(user);
     res.render('bookload',{id:data.id_1,loads:loads});
+    }
+    catch (err) {
+      console.log(err);
+        const user=req.cookies.userdata;
+        const  data=JSON.parse(user);
+        res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${data.id_1}` });  
+    }
   });
 
 
@@ -632,13 +639,20 @@ app.get('/index/:id',(req, res) => {
   //starting of bboking a truckroute
 app.get("/booktruck",async(req,res)=>{
     //const id=req.session.id;
-
+    try{
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const trucks = await PostTruck.find({ createdAt: { $gte: sevenDaysAgo } });
     const user=req.cookies.userdata;
     const  data=JSON.parse(user);
     res.render('booktruck',{id:data.id_1,trucks:trucks});
+    }
+    catch (err) {
+        console.log(err);
+        const user=req.cookies.userdata;
+        const  data=JSON.parse(user);
+        res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${data.id_1}` });
+    }
   });
 
 
