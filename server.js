@@ -176,8 +176,18 @@ try{
       const saltRounds=10;
       const salt=await bcrypt.genSalt(saltRounds);
       const hashedpassword=await bcrypt.hash(password,salt);
+      const withTimeout = (promise, ms) => {
+        const timeoutPromise = new Promise((resolve, reject) => {
+          setTimeout(() => {
+            reject(new Error('Operation timed out'));
+          }, ms);
+        });
+      
+        return Promise.race([promise, timeoutPromise]);
+      };
 
-      const newUser = new UserDetails({ username:username, email:email,phone:phone,password:hashedpassword })
+      //const user=await withTimeout(UserDetails.findOne({ username:username}),30000);
+      const newUser = await withTimeout(new UserDetails({ username:username, email:email,phone:phone,password:hashedpassword }),30000);
       newUser.save() 
       .then(() => {
           res.redirect('/login');
