@@ -6,7 +6,11 @@ const postload = new mongoose.Schema({
   quantity: { type: String, required: true },
   phone: { type: String, required: true },
   price: { type: String, required: true },
-  description: { type: String, required: true }
+  description: { type: String, required: true },
+  createdAt: {
+    type: Date,
+    default: Date.now  // Set the default value to the current timestamp
+  }
   
 });
 
