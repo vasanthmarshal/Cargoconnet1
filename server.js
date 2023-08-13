@@ -21,6 +21,15 @@ app.use(express.json());
 const axios = require("axios");
 const querystring = require('querystring');
 const alert = require('alert-node');
+const NodeCache=require('node-cache');
+const bcrypt = require('bcrypt');
+
+
+
+
+
+//creating instance of node cache
+const myCache=new NodeCache();
 
 //ADDING TWILIO API
 const accountSid = 'ACf1312dd71e801f259015782aba72428c';
@@ -89,26 +98,104 @@ app.get('/', function(req, res) {
 
 
 
-
 //start of signin route
 app.get('/signup', function(req, res) {
     res.sendFile(path.join(__dirname, './views/signup.html'));
 });
 
-//handling form submission on signup
-app.post('/signup', function(req, res) {
-    const { username, email,phone, password } = req.body;
-    //req.session.email=email;
 
-    const newUser = new UserDetails({ username, email,phone,password });
-    newUser.save() 
-    .then(() => {
-        res.redirect('/login')
-      })
-      .catch((err) => {
-        console.log(err);
-        res.send('please Go back and signup again');
-      });
+function generateOTP() {
+  const digits = '0123456789';
+  let OTP = '';
+  for (let i = 0; i < 6; i++) {
+    OTP += digits[Math.floor(Math.random() * 10)];
+  }
+  return OTP;
+}
+
+//Oce user filles all the information along post request (enteredinfo+otp+otppage is send)
+app.post('/send-otp', async (req, res) => {
+  const { username, email,phone, password} = req.body;
+  const user=await UserDetails.findOne({ email:email})
+    if(user) {
+      res.render('alert', { message: `it seems that the email address you've provided (${email}) is already registered with us. If this is your email, please proceed to the login page to access your account.
+      If you've forgotten your username or password, you can use the 'Forgot Username' and 'Forgot Password' option on the login page to reset it.`,route:`signup` });
+
+      //alert(`it seems that the email address you've provided (${email}) is already registered with us. If this is your email, please proceed to the login page to access your account.
+      //If you've forgotten your password, you can use the 'Forgot Password' option on the login page to reset it.`);
+      //res.redirect('/signup');
+    }
+    else{
+
+  const otp = generateOTP();
+  const transporter=nodemailer.createTransport({
+    service:'gmail',
+    auth:{
+      user:'vasanthmarshal2020@gmail.com',
+      pass:process.env.PASSWORD1
+    }
+  });
+
+  const option3={
+    from:'vasanthmarshal2020@gmail.com',
+    to:`${email}`,
+    subject:'From Cargo Connect',
+    text:`The OTP: ${otp}`
+  };
+
+  transporter.sendMail(option3,function(error,info)
+        {
+          if(error)
+          {
+            console.log(error);
+          }
+          else{
+            console.log('Email sent: ' + info.response);
+            res.render('verifysignup', {otp,username, email,phone, password });
+          }
+        });
+    }
+
+});
+
+//handling form submission 
+//once the otp is send all the information is  all the information are proceessed and send
+app.post('/verify-otp', async function(req, res) {
+    const {otp,username, email,phone, password,enteredotp} = req.body;
+
+try{
+
+  if (otp === enteredotp) 
+  {
+      const saltRounds=10;
+      const salt=await bcrypt.genSalt(saltRounds);
+      const hashedpassword=await bcrypt.hash(password,salt);
+
+      const newUser = new UserDetails({ username:username, email:email,phone:phone,password:hashedpassword })
+      newUser.save() 
+      .then(() => {
+          res.redirect('/login');
+        })
+        .catch((err) => {
+          console.log(err);
+          res.render('alert', { message: `Oops! It seems there was an issue with your sign-up. Please double-check your information and try signing up again.`,route:`signup` });
+          //res.send('please Go back and signup again');
+        });
+  }
+
+  else
+  {
+    res.render('alert', { message: `The Entered OTP is incorret please go back and signup again`,route:`signup` });
+    //alert(`Enter the correct otp send to you email id ${email}`);
+    //res.redirect('/signup');
+  }
+
+}
+catch(err) 
+{
+    console.log(err);
+    res.render('alert', { message: `Oops! It seems there was an issue with your sign-up. Please double-check your information and try signing up again.`,route:`signup` });
+  }
 });
 
 //end of sign up page
@@ -124,11 +211,16 @@ app.get('/login', function(req, res) {
 app.post('/login',async(req, res)=> {
     const username = req.body.username;
     const password = req.body.password;
+
     try{
      const user=await UserDetails.findOne({ username:username})
      console.log(user);
      if(user) {
-        const result = password === user.password;
+        //const saltRounds=10;
+        //const salt=await bcrypt.genSalt(saltRounds);
+        //const hashedenteredpassword=await bcrypt.hash(password,salt);
+        //console.log(hashedenteredpassword);
+        const result = await bcrypt.compare(password,user.password);
         if(result)
         {
 
@@ -150,16 +242,18 @@ app.post('/login',async(req, res)=> {
         //res.redirect('/otpverify');
         }
         else{
-          res.render('alert', { message: 'Entered password is wrong' });
+          res.render('alert', { message: `Unfortunately, the password you entered doesn't match the one associated with this account. If you've forgotten your password, you can use the 'Forgot Password' option to  reset it.`,route:`login` });
         }
       }
       else
       {
-        res.render('alert', { message: 'User not found' });
+        res.render('alert', { message: `We couldn't find a username associated with the information you provided. If you've forgotten your username, please make use of the 'Forgot Username' option to retrieve it.`,route:`login` });
       }
     }
       catch(err) {
-        res.send('Please go back and login again,There is issue in connecting to database');
+        console.log(err);
+        res.render('alert', { message: `Oops! It seems there was an issue with your login. Please double-check your information and try login again.`,route:`login` });
+
       }
 });
 
@@ -190,8 +284,8 @@ app.post("/forgotusername",async(req,res)=>{
         const option3={
           from:'vasanthmarshal2020@gmail.com',
           to:`${email}`,
-          subject:'From SMT Transport Manapparai',
-          text:`the username of the this regitered mail is ${user.username}`
+          subject:'From CargoConnect',
+          text:`The username for the registered email address is ${user.username}. If you need further assistance, feel free to reach out.`
         };
     
         transporter.sendMail(option3,function(error,info)
@@ -204,11 +298,10 @@ app.post("/forgotusername",async(req,res)=>{
             console.log('mail.send',info);
           }
         })
-        alert('corresponding username is send to the registered email');
-        res.redirect("./login");
+        res.render('alert', { message: `We've sent your username to the email address you registered with. Please check your inbox`,route:`login` });
       }
       else{
-        alert('enter a valid registered email id');
+        res.render('alert', { message: `The email address entered is not yet registered. Please provide a valid and registered email address to proceed.`,route:`forgotusername` });
       }
 
 
@@ -228,13 +321,19 @@ app.post("/forgotusername",async(req,res)=>{
         const {username}=req.body;
         let password = Math.floor(Math.random() * 9000) + 1000; // Generate a random number between 1000 and 9999
         const pw=password.toString(); 
-        const passwordCache = {
+        //
+        const value={otp:pw};
+        myCache.set("pw_1",JSON.stringify(value));
+        const data=JSON.parse(myCache.get("pw_1"));
+        //console.log(data.otp);
+        //
+        /*const passwordCache = {
           pw_1:pw
         };
         const updatedData = JSON.stringify(passwordCache);
         res.cookie('passwordCache1', updatedData);
-         console.log('cookies have added succesfuuly');
-        const user=await UserDetails.findOne({username:username});
+         console.log('cookies have added succesfuuly');*/
+      const user=await UserDetails.findOne({username:username});
       if(user)
       {
         const transporter=nodemailer.createTransport({
@@ -248,8 +347,8 @@ app.post("/forgotusername",async(req,res)=>{
         const option3={
           from:'vasanthmarshal2020@gmail.com',
           to:`${user.email}`,
-          subject:'From SMT Transport Manapparai',
-          text:`the otp is ${pw}`
+          subject:'From CargoConnect',
+          text:`the OTP: ${pw}`
         };
     
         transporter.sendMail(option3,function(error,info)
@@ -263,12 +362,10 @@ app.post("/forgotusername",async(req,res)=>{
             console.log('mail send',info);
           }
         })
-        alert('the otp is sen to the corresponding email address  ');
-        res.redirect("/forgotpassword");
+        res.render('alert', { message: `The OTP has been sent to the email address associated with this username. Please check your inbox for the verification code.`,route:`forgotpassword` });
       }
       else{
-        alert('enter a valid username');
-        res.redirect();
+        res.render('alert', { message: `Please enter the correct username to proceed`,route:`forgotpasswordotp` });
       }
 
       });
@@ -286,33 +383,37 @@ app.get("/forgotpassword",async(req,res)=>
 //Used to erify the password and otp and Update in the server
 app.post("/forgotpassword",async(req,res)=>
 {
-  const {userName,newPassword,confirmPassword,otp}=req.body;
-  const user=req.cookies.passwordCache1;
-  const  data=JSON.parse(user);
-  if(otp===data.pw_1)
+  const {username,newPassword,confirmPassword,otp}=req.body;
+  /*const user=req.cookies.passwordCache1;
+  const  data=JSON.parse(user);*/
+  const data=JSON.parse(myCache.get("pw_1"));
+  if(otp==data.otp)
   {
     if(newPassword!=confirmPassword)
     {
-      alert('New password and Confirm Password are wrong Please enter Again')
-      res.redirect('/forgotpassword');
+      res.render('alert', { message: `The new password and confirmed password do not match. Please ensure both passwords are the same before proceeding.`,route:`forgotpassword` });
     }
     else
     {
-      const user=await UserDetails.findOne({ username:userName});
-      if(!user)
+      const user1=await UserDetails.findOne({ username:username});
+      if(!user1)
       {
-        alert('user not found');
-        res.render('forgotpassword');
+        res.render('alert', { message: `Please enter the correct username to proceed`,route:`forgotpassword` });
       }
-      user.password=newPassword;
-      await user.save();
+      else
+      {
+      const salt=await bcrypt.genSalt(10);
+      const hashedPassword=await bcrypt.hash(newPassword,salt);
+      user1.password=hashedPassword;
+      await user1.save();
       res.redirect("./login");
+      }
 
     }
   }
   else
   {
-    alert("enter the current otp password");
+    res.render('alert', { message: `Please enter the correct OTP that was sent to your registered email address.`,route:`forgotpassword` });
   }
 });
 
@@ -352,8 +453,8 @@ app.get('/index/:id',(req, res) => {
     const option1={
       from:'vasanthmarshal2020@gmail.com',
       to:`${req.body.email}`,
-      subject:'From SMT Transport Manapparai',
-      text:'We receied your request our team will contact you sonner'
+      subject:'From CargoConnect',
+      text:'We received your request. Our team will contact you soon.'
     };
 
     transporter.sendMail(option1,function(error,info)
@@ -371,11 +472,11 @@ app.get('/index/:id',(req, res) => {
       from:'vasanthmarshal2020@gmail.com',
       to:`vasathmarshal2020@gmail.com`,
       subject:'From SMT Transport Manapparai',
-      text:`the first name of the customer is ${req.body.fname} 
-      the last of the customer is${req.body.lastname} 
-      the customer email is ${req.body.email} 
-      the customers description ${req.body.subject} 
-      the customers phone number${req.body.phone} `
+      text:`the first name of the customer is ${req.body.fname}
+      the last name of the customer is ${req.body.lastname}
+      the customer email is ${req.body.email}
+      the customer's description: ${req.body.subject}
+      the customer's phone number: ${req.body.phone}`
     };
 
     transporter.sendMail(option2,function(error,info)
@@ -424,7 +525,7 @@ app.get('/index/:id',(req, res) => {
       })
       .catch((err) => {
         console.log(err);
-        res.send('Error saving data');
+        res.render('alert', { message: `Oops! It seems there was an issue with your posting your load. Please double-check your information and try posting the load again.`,route:`poatload` });
       });
   });
 
@@ -454,7 +555,7 @@ app.get('/index/:id',(req, res) => {
       })
       .catch((err) => {
         console.log(err);
-        res.send('Error saving data');
+        res.render('alert', { message: `Oops! It seems there was an issue with your posting your truck. Please double-check your information and try posting the Truck again.`,route:`poattruck` });
       });
   });
 
@@ -463,11 +564,12 @@ app.get('/index/:id',(req, res) => {
 
   //starting of bboking a load
   app.get("/bookload",async(req,res)=>{
-    //const id=req.session.id;
+
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const loads = await PostLoad.find({ createdAt: { $gte: sevenDaysAgo } });
     const user=req.cookies.userdata;
     const  data=JSON.parse(user);
-    const loads=await PostLoad.find({});
-    
     res.render('bookload',{id:data.id_1,loads:loads});
   });
 
@@ -476,27 +578,38 @@ app.get('/index/:id',(req, res) => {
 
   //starting of filtering loading
   app.post("/filterload",async(req,res)=>{
+
     const {fromlocation,tolocation}=req.body;
-    console.log(fromlocation);
-    console.log(tolocation+"  hello");
-    //based onused entered which location
+
     if(fromlocation!=""&&tolocation=="")
     {
-       var loads=await PostLoad.find({fromlocation:fromlocation});
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      var loads = await PostLoad.find({ fromlocation:fromlocation,createdAt: { $gte: sevenDaysAgo } });
     }
+
     else if(fromlocation==""&&tolocation!="")
     {
-       var loads=await PostLoad.find({tolocation:tolocation});
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      var loads = await PostLoad.find({ tolocation:tolocation,createdAt: { $gte: sevenDaysAgo } });
+  
     }
     else if(fromlocation==""&&tolocation=="")
     {
-       var loads=await PostLoad.find({});
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      var loads = await PostLoad.find({createdAt: { $gte: sevenDaysAgo } });
+
     }
 
     else
     {
-      var loads=await PostLoad.find({fromlocation:fromlocation,tolocation:tolocation});
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      var loads = await PostLoad.find({fromlocation:fromlocation,tolocation:tolocation,createdAt: { $gte: sevenDaysAgo } });
     }
+    
     res.render('bookload',{loads:loads});
   });
 
@@ -513,11 +626,15 @@ app.get('/index/:id',(req, res) => {
   //starting of bboking a truckroute
 app.get("/booktruck",async(req,res)=>{
     //const id=req.session.id;
-    const trucks=await PostTruck.find({})
+
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const trucks = await PostTruck.find({ createdAt: { $gte: sevenDaysAgo } });
     const user=req.cookies.userdata;
     const  data=JSON.parse(user);
     res.render('booktruck',{id:data.id_1,trucks:trucks});
   });
+
 
 
   //sending details based on choose by form and to location
@@ -525,22 +642,42 @@ app.get("/booktruck",async(req,res)=>{
     const {fromlocation,tolocation}=req.body;
     console.log(fromlocation);
     console.log(tolocation+"  hello");
-    //based onused entered which location
+
     if(fromlocation!=""&&tolocation=="")
     {
-       var trucks=await PostTruck.find({currentlocation:fromlocation});
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        const trucks = await PostTruck.find({
+        currentlocation:fromlocation,
+        createdAt: { $gte: sevenDaysAgo }
+      });
     }
     else if(fromlocation==""&&tolocation!="")
     {
-       var trucks=await PostTruck.find({tolocation:tolocation});
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      var trucks = await PostTruck.find({
+      tolocation:tolocation,
+        createdAt: { $gte: sevenDaysAgo }
+      });
+
+       //var trucks=await PostTruck.find({tolocation:tolocation});
     }
     else if(fromlocation==""&&tolocation=="")
     {
-       var trucks=await PostTruck.find({});
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      const trucks = await PostTruck.find({ createdAt: { $gte: sevenDaysAgo } });
     }
     else
     {
-      var trucks=await PostTruck.find({currentlocation:fromlocation,tolocation:tolocation});
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      var trucks = await PostTruck.find({
+        currentlocation:fromlocation,
+        tolocation:tolocation,
+        createdAt: { $gte: sevenDaysAgo }
+      });
     }
     res.render('booktruck',{trucks:trucks});
   });
@@ -620,8 +757,27 @@ app.post('/bookloadsmt/:id',async(req,res) => {
   const option4={
     from:'vasanthmarshal2020@gmail.com',
     to:`${req.body.email}`,
-    subject:'From SMT Transport Manapparai',
-    text:'We receied your request our team will contact you sonner'
+    subject:'From Cargo Connect',
+    text:`We have received your request for booking a vehicle. Here are the details you provided:
+
+    Customer Information:
+    - First Name: ${req.body.firstname}
+    - Last Name: ${req.body.lastname}
+    - Email: ${req.body.email}
+    - Phone Number: ${req.body.phone}
+    
+    Booking Details:
+    - From Location: ${req.body.fromlocation}
+    - To Location: ${req.body.tolocation}
+    - Capacity Needed: ${req.body.capacity}
+    - Vehicle Company Preference: ${req.body.company}
+    - Vehicle Type Needed: ${req.body.type}
+    - Vehicle Length Needed: ${req.body.length}
+    
+    Additional Information:
+    - Customer's Description: ${req.body.subject}
+    
+    Our team will review your request and get back to you soon. Thank you for choosing our services.`
   };
 
   transporter.sendMail(option4,function(error,info)
@@ -638,18 +794,27 @@ app.post('/bookloadsmt/:id',async(req,res) => {
   const option5={
     from:'vasanthmarshal2020@gmail.com',
     to:`vasathmarshal2020@gmail.com`,
-    subject:'From SMT Transport Manapparai',
-    text:`the first name of the customer is ${req.body.firstname} 
-    the last of the customer is  ${req.body.lastname} 
-    the customer email is ${req.body.email} 
-    the from location is ${req.body.fromlocation} 
-    the tolocation is ${req.body.tolocation} 
-    the capacity is ${req.body.capacity} 
-    the needed vehicle company ${req.body.company} 
-    the needed ehicle type is ${req.body.type} 
-    the needed length of vehicle is${req.body.length} 
-    the customers description ${req.body.subject} 
-    the customers phone number${req.body.phone} `
+    subject:'From Cargo Connect',
+    text:`We have received your request for booking a vehicle. Here are the details you provided:
+
+    Customer Information:
+    - First Name: ${req.body.firstname}
+    - Last Name: ${req.body.lastname}
+    - Email: ${req.body.email}
+    - Phone Number: ${req.body.phone}
+    
+    Booking Details:
+    - From Location: ${req.body.fromlocation}
+    - To Location: ${req.body.tolocation}
+    - Capacity Needed: ${req.body.capacity}
+    - Vehicle Company Preference: ${req.body.company}
+    - Vehicle Type Needed: ${req.body.type}
+    - Vehicle Length Needed: ${req.body.length}
+    
+    Additional Information:
+    - Customer's Description: ${req.body.subject}
+    
+    Our team will review your request and get back to you soon. Thank you for choosing our services.`
   };
 
   transporter.sendMail(option5,function(error,info)
@@ -681,7 +846,7 @@ const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&ap
 
 axios.get(apiUrl)
   .then(response => {
-    res.render("weather",{weather:response.data});
+    res.render('weather',{weather:response.data});
   })
   .catch(error => {
     console.log(error);
@@ -769,6 +934,7 @@ app.get('/getfuelprice/:stateId/:cityId',async(req,res)=>{
 });
 //end of get fuel price by city
 
+
 //allowing admin to ente the truck link
 
 app.get('/enterlink',(req,res)=>
@@ -843,5 +1009,19 @@ app.post('/sendtracklink',async(req, res) => {
       res.send(error);
      }
 })
+
+
+//working on logout functionalities
+
+app.get('/logout', (req, res) => {
+  // Clear the session
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+    }
+    // Redirect the user to the login page
+    res.redirect('/login'); // Change to your login page URL
+  });
+});
 
 
