@@ -1,7 +1,11 @@
 --> Developed a website solution aimed at revolutionizing the logistic industry by creating a direct connection between truck owners and load owners eliminating the need for traditional brokerages.
+
 -->This Website empower user to transparently post and  book trucks and loads directly,optimizing the logistic process while minimizing the cost and maximizing profit for both truck owners and load owners.
+
 -->Users can easily access of recently posted trucks and loads within the last 7 days. They can then further narrow down their search by specifying the 'from' and 'to' locations, ensuring efficient and relevant results.
+
 -->Implemented real-time load tracking feature within our logistics platform, empowering load owners to seamlessly monitor the live location of their shipments through a designated load ID obtained during the booking phase.
+
 -->Implemented real-time fuel price and weather condition tracking functionality within the logistics platform, enabling users to access up-to-date information for optimized route planning and decision-making
 
 "Develop a comprehensive digital platform that serves as a direct and transparent marketplace for truck owners and load owners, aiming to revolutionize the traditional transportation industry. The platform should eliminate the need for intermediary transport agents and their associated commissions, offering cost-effective and secure solutions for both truck owners and load owners. Ensure seamless user experience, real-time tracking, secure payment options, and user verification mechanisms to build trust and streamline the transportation process. The goal is to create a user-centric ecosystem that enhances efficiency, reduces costs, and provides a trustworthy environment for all stakeholders involved in the transportation process."
