@@ -147,7 +147,8 @@ app.post('/send-otp', async (req, res) => {
         {
           if(error)
           {
-            console.log(error);
+            //console.log(error);
+            res.render('alert', { message: `please Enter the valid email id during signup`,route:`signup` });
           }
           else{
             console.log('Email sent: ' + info.response);
