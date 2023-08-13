@@ -219,7 +219,17 @@ app.post('/login',async(req, res)=> {
     const password = req.body.password;
 
     try{
-     const user=await UserDetails.findOne({ username:username})
+      const withTimeout = (promise, ms) => {
+        const timeoutPromise = new Promise((resolve, reject) => {
+          setTimeout(() => {
+            reject(new Error('Operation timed out'));
+          }, ms);
+        });
+      
+        return Promise.race([promise, timeoutPromise]);
+      };
+     
+     const user=await withTimeout(UserDetails.findOne({ username:username}),30000);
      console.log(user);
      if(user) {
         //const saltRounds=10;
