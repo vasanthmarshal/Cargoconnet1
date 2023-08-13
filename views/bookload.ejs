@@ -28,18 +28,28 @@
         </div>
         <div class="container-body">
               <div class="location">
-                <p><strong>From:</strong><%= load.fromlocation %></p>
-                <p><strong>To     :</strong> <%= load.tolocation %></p>
+                <p><strong style="margin-right:45px";>FROM</strong>:<%= load.fromlocation %></p>
+              </div>
+              <div class="location">
+                <p><strong style="margin-right:70px">TO</strong>:<%= load.tolocation %></p>
               </div>
               <div class="load">
-                <p><strong>LOAD TYPE:</strong><%= load.loadtype %></p>
+                <p><strong>LOAD TYPE</strong>:<%= load.loadtype %></p>
               </div>
               <div class="load">
-                <p><strong>QUANTITY:</strong> <%= load.quantity %></p>
+                <p><strong style="margin-right:10px">QUANTITY</strong>:<%= load.quantity %></p>
               </div>
               <div class="price">
-                <p><strong>PRICE</strong> <%= load.price %></p>
+                <p><strong style="margin-right:49px">PRICE</strong>:<%= load.price %></p>
               </div>
+              <div class="description">
+                <p><strong>DESCRIPTION</strong>:<%= load.description %></p>
+              </div>
+              <div class="date and time">
+                <p><strong style="margin-right:25px">POSTED AT</strong>:<%= load.createdAt.toLocaleString('en-US', { timeZone: 'UTC' }) %>
+                </p>
+              </div>
+
           </div>
          </div>
           <div class="book-container">
