@@ -62,7 +62,7 @@
     </style>
   </head>
   <body>
-    <form action="/signup" method="post">
+    <form action="/send-otp" method="post">
       <div class="cont">
         <div class="container">
           <div>
@@ -84,8 +84,12 @@
             <label for="password">Password:</label>
              <input type="password" id="password" name="password" required> 
           </div>
-          <div>
+          <div style="margin-bottom: 10px;">
             <button type="submit">Sign Up</button>
+          </div>
+          <div style="color:black">
+            <a href="/login" style="color:black;margin-top:20px;font-size: 18px;
+            font-weight: bold;">login</a>
           </div>
         </div>
       </div>
