@@ -28,17 +28,23 @@
           </div>
           <div class="container-body">
                 <div class="location">
-                  <p><strong>From:</strong><%= truck.currentlocation %></p>
-                  <p><strong>To     :</strong> <%= truck.tolocation %></p>
+                  <p><strong style="margin-right:77px">From</strong>:<%= truck.currentlocation %></p>
+                </div>
+                <div class="location">
+                  <p><strong style="margin-right:97px">To</strong>:<%= truck.tolocation %></p>
                 </div>
                 <div class="load">
-                  <p><strong>Vehicle Number:</strong><%= truck.vehiclenumber %></p>
+                  <p><strong>Vehicle Number</strong>:<%= truck.vehiclenumber %></p>
                 </div>
                 <div class="load">
-                  <p><strong>Vehicle Type:</strong> <%= truck.vehicletype %></p>
+                  <p><strong style="margin-right:30px">Vehicle Type</strong>:<%= truck.vehicletype %></p>
                 </div>
                 <div class="price">
-                  <p><strong>Capcity</strong> <%= truck.capacity %></p>
+                  <p><strong style="margin-right:65px">Capcity</strong>:<%= truck.capacity %></p>
+                </div>
+                <div class="date and time">
+                  <p><strong style="margin-right:25px">POSTED AT</strong>:<%= truck.createdAt.toLocaleString('en-US', { timeZone: 'UTC' }) %>
+                  </p>
                 </div>
             </div>
            </div>
