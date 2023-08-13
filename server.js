@@ -585,26 +585,27 @@ app.get('/index/:id',(req, res) => {
   app.post("/filterload",async(req,res)=>{
 
     const {fromlocation,tolocation}=req.body;
+    var loads;
 
     if(fromlocation!=""&&tolocation=="")
     {
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      var loads = await PostLoad.find({ fromlocation:fromlocation,createdAt: { $gte: sevenDaysAgo } });
+      loads = await PostLoad.find({ fromlocation:fromlocation,createdAt: { $gte: sevenDaysAgo } });
     }
 
     else if(fromlocation==""&&tolocation!="")
     {
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      var loads = await PostLoad.find({ tolocation:tolocation,createdAt: { $gte: sevenDaysAgo } });
+      loads = await PostLoad.find({ tolocation:tolocation,createdAt: { $gte: sevenDaysAgo } });
   
     }
     else if(fromlocation==""&&tolocation=="")
     {
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      var loads = await PostLoad.find({createdAt: { $gte: sevenDaysAgo } });
+      loads = await PostLoad.find({createdAt: { $gte: sevenDaysAgo } });
 
     }
 
@@ -612,7 +613,7 @@ app.get('/index/:id',(req, res) => {
     {
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      var loads = await PostLoad.find({fromlocation:fromlocation,tolocation:tolocation,createdAt: { $gte: sevenDaysAgo } });
+      loads = await PostLoad.find({fromlocation:fromlocation,tolocation:tolocation,createdAt: { $gte: sevenDaysAgo } });
     }
     
     res.render('bookload',{loads:loads});
@@ -647,12 +648,12 @@ app.get("/booktruck",async(req,res)=>{
     const {fromlocation,tolocation}=req.body;
     console.log(fromlocation);
     console.log(tolocation+"  hello");
-
+    var trucks;
     if(fromlocation!=""&&tolocation=="")
     {
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-        const trucks = await PostTruck.find({
+        trucks = await PostTruck.find({
         currentlocation:fromlocation,
         createdAt: { $gte: sevenDaysAgo }
       });
@@ -661,7 +662,7 @@ app.get("/booktruck",async(req,res)=>{
     {
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      var trucks = await PostTruck.find({
+       trucks = await PostTruck.find({
       tolocation:tolocation,
         createdAt: { $gte: sevenDaysAgo }
       });
@@ -672,13 +673,13 @@ app.get("/booktruck",async(req,res)=>{
     {
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      const trucks = await PostTruck.find({ createdAt: { $gte: sevenDaysAgo } });
+      trucks = await PostTruck.find({ createdAt: { $gte: sevenDaysAgo } });
     }
     else
     {
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      var trucks = await PostTruck.find({
+      trucks = await PostTruck.find({
         currentlocation:fromlocation,
         tolocation:tolocation,
         createdAt: { $gte: sevenDaysAgo }
