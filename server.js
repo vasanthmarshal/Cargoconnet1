@@ -116,11 +116,11 @@ function generateOTP() {
 //Oce user filles all the information along post request (enteredinfo+otp+otppage is send)
 app.post('/send-otp', async (req, res) => {
   const { username, email,phone, password} = req.body;
+  try{
   const user=await UserDetails.findOne({ email:email})
     if(user) {
       res.render('alert', { message: `it seems that the email address you've provided (${email}) is already registered with us. If this is your email, please proceed to the login page to access your account.
       If you've forgotten your username or password, you can use the 'Forgot Username' and 'Forgot Password' option on the login page to reset it.`,route:`signup` });
-
       //alert(`it seems that the email address you've provided (${email}) is already registered with us. If this is your email, please proceed to the login page to access your account.
       //If you've forgotten your password, you can use the 'Forgot Password' option on the login page to reset it.`);
       //res.redirect('/signup');
@@ -155,7 +155,12 @@ app.post('/send-otp', async (req, res) => {
           }
         });
     }
-
+  }
+  catch(err) 
+{
+    console.log(err);
+    res.render('alert', { message: `Oops! It seems there was an issue with your sign-up. Please double-check your information and try signing up again.`,route:`signup` });
+  }
 });
 
 //handling form submission 
@@ -525,7 +530,7 @@ app.get('/index/:id',(req, res) => {
       })
       .catch((err) => {
         console.log(err);
-        res.render('alert', { message: `Oops! It seems there was an issue with your posting your load. Please double-check your information and try posting the load again.`,route:`postload` });
+        res.render('alert', { message: `Oops! It seems there was an issue with your posting your load. Please double-check your information and try posting the load again.`,route:`poatload` });
       });
   });
 
@@ -555,7 +560,7 @@ app.get('/index/:id',(req, res) => {
       })
       .catch((err) => {
         console.log(err);
-        res.render('alert', { message: `Oops! It seems there was an issue with your posting your truck. Please double-check your information and try posting the Truck again.`,route:`posttruck` });
+        res.render('alert', { message: `Oops! It seems there was an issue with your posting your truck. Please double-check your information and try posting the Truck again.`,route:`poattruck` });
       });
   });
 
