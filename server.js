@@ -902,7 +902,7 @@ const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&ap
 axios.get(apiUrl)
   .then(response => {
     console.log(response.data);
-    res.render('weather',{weather:response.data});
+    res.render('weather',{weather:response.data,location:location});
   })
   .catch((error) => {
     console.log(error);
