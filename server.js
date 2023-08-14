@@ -759,10 +759,7 @@ app.get("/booktruck",async(req,res)=>{
 
   //end of handling whatsup message
   
-  app.listen(3000, () => {
-    console.log('Server listening on port 3000');
-    console.log("this is from cargo connect");
-  });
+ 
 
 
 
@@ -1062,6 +1059,14 @@ app.get('/logout', (req, res) => {
     }
     // Redirect the user to the login page
     res.redirect('/login'); // Change to your login page URL
+  });
+});
+
+dp.then(() => {
+  // Database connection is established, start the Express server
+  app.listen(3000, () => {
+    console.log(`Server listening on port 3000`);
+    console.log("this is from cargo connect");
   });
 });
 
