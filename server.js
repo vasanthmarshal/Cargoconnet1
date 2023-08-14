@@ -614,6 +614,7 @@ app.get('/index/:id',(req, res) => {
 
     const {fromlocation,tolocation}=req.body;
     var loads;
+    try{
 
     if(fromlocation!=""&&tolocation=="")
     {
@@ -645,6 +646,14 @@ app.get('/index/:id',(req, res) => {
     }
     
     res.render('bookload',{loads:loads});
+  }
+  catch(err)
+  {
+    console.log(err);
+        const user=req.cookies.userdata;
+        const  data=JSON.parse(user);
+        res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${data.id_1}` });
+  }
   });
 
 
@@ -684,6 +693,7 @@ app.get("/booktruck",async(req,res)=>{
     console.log(fromlocation);
     console.log(tolocation+"  hello");
     var trucks;
+    try{
     if(fromlocation!=""&&tolocation=="")
     {
         const sevenDaysAgo = new Date();
@@ -721,6 +731,14 @@ app.get("/booktruck",async(req,res)=>{
       });
     }
     res.render('booktruck',{trucks:trucks});
+  }
+  catch(err)
+  {
+    console.log(err);
+        const user=req.cookies.userdata;
+        const  data=JSON.parse(user);
+        res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${data.id_1}` });
+  }
   });
 
 
@@ -759,7 +777,7 @@ app.get("/booktruck",async(req,res)=>{
 
   //end of handling whatsup message
   
- 
+  
 
 
 
@@ -881,14 +899,18 @@ app.post('/getweather',(req,res)=>
   const apiKey = '37703db95dec06430e8d026a901a26a5';
   const {location}=req.body;
 const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`;
-
 axios.get(apiUrl)
   .then(response => {
+    console.log(response.data);
     res.render('weather',{weather:response.data});
   })
-  .catch(error => {
+  .catch((error) => {
     console.log(error);
+        const user=req.cookies.userdata;
+        const  data=JSON.parse(user);
+        res.render('alert', { message: `please enter a valid city name`,route:`index/${data.id_1}` });
   });
+
 
 });
 
@@ -1062,6 +1084,12 @@ app.get('/logout', (req, res) => {
   });
 });
 
+/*app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+  console.log("this is from cargo connect");
+  
+});*/
+
 dp.then(() => {
   // Database connection is established, start the Express server
   app.listen(3000, () => {
@@ -1069,5 +1097,7 @@ dp.then(() => {
     console.log("this is from cargo connect");
   });
 });
+
+
 
 
