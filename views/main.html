@@ -21,7 +21,7 @@
 			justify-content: center; 
 		}
 		.container {
-			height:300px;
+			height:350px;
 			width:700px;
 			display: flex;
 			flex-direction: column;
@@ -47,6 +47,21 @@
 		button:hover {
 			background-color: #3e8e41;
 		}
+		.bottom-left {
+			position: absolute;
+			bottom: 0px;
+			right: 10px;
+			font-size: 12px;
+			color: #333;
+			font-weight: bold;
+			font-style: italic;
+		}
+		.email-link {
+			font-size: 12px;
+			color: blue; /* Change the color to blue */
+			text-decoration: underline; /* Add underline */
+		}
+		
 	</style>
 </head>
 <body>
@@ -61,6 +76,11 @@
 			<div>
 				<a href="/login"><button id="login-btn">Login</button></a>
 			</div>
+			<p class="bottom-left">
+				*For the Best experience
+				Use laptop/desktop computer.<br>
+				*For any issues, please email:<a class="email-link">vasanthmarshal2020@gmail.com</a>.
+			</p>
 		</div>
 	</div>
 	<script>
