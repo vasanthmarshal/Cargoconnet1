@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Success Page</title>
+  <style>
+    body {
+      background-color: #f5f5f5;
+      font-family: Arial, sans-serif;
+    }
+    
+    .success {
+      background-color: #e9f7ef;
+      border: 1px solid #9fdfd1;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      margin: 50px auto;
+      max-width: 500px;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .success h1 {
+      color: #5cb85c;
+      font-size: 36px;
+      margin: 0 0 20px;
+    }
+    
+    .success p {
+      color: #333;
+      font-size: 18px;
+      line-height: 1.5;
+      margin: 0;
+    }
+    
+    .success button {
+      background-color: #5cb85c;
+      border: none;
+      border-radius: 3px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 10px 20px;
+      transition: background-color 0.2s ease;
+    }
+    
+    .success button:hover {
+      background-color: #449d48;
+    }
+  </style>
+</head>
+<body>
+  <div class="success">
+    <h1>Message!</h1>
+    <p><%=message%></p>
+    <a href="/<%=`${route}`%>"><button type="button">OK</button></a>
+  </div>
+</body>
+</html>
