@@ -57,7 +57,6 @@ app.use(require("express-session")({
     saveUninitialized: false
 }));
 
-
 app.use(passport.initialize());
 app.use(passport.session());
   
@@ -93,26 +92,9 @@ app.use(cookieParser());
 
 //main page
 app.get('/', function(req, res) {
-  const usernameCookie = req.cookies.username1;
-  if(usernameCookie)
-  {
-         const user1=req.cookies.userdata;//getting the data from cookie
-         const  data1=JSON.parse(user1);//parsing the cookies 
-         res.redirect(`/index/${data1.id_1}`);//using inside our website;
-  }
-  else
-  {
-    res.redirect('/main');
-  }
+    res.sendFile(path.join(__dirname, './views/main.html'));
 });
 //end of main page
-
-app.get('/main', function(req, res) {
-  res.sendFile(path.join(__dirname, './views/main.html'));
-});
-
-
-
 
 
 
@@ -245,7 +227,6 @@ app.get('/login', function(req, res) {
 app.post('/login',async(req, res)=> {
     const username = req.body.username;
     const password = req.body.password;
-    const remember=req.body.remember;
 
     try{
       const withTimeout = (promise, ms) => {
@@ -263,11 +244,8 @@ app.post('/login',async(req, res)=> {
      if(user) {
         const result = await bcrypt.compare(password,user.password);
         if(result)
-        {  
-        if(remember==='on')
         {
-          res.cookie('username1', username, { maxAge: 1 * 24 * 60 * 60 * 1000 }); 
-        }
+
         const data = {
           name_1 :user.username,
           email_1:user.email,
@@ -279,9 +257,9 @@ app.post('/login',async(req, res)=> {
 
         res.cookie('userdata', serializedData);
         console.log('Cookies are set');
-         const user1=req.cookies.userdata;//getting the data from cookie
-         const  data1=JSON.parse(user1);//parsing the cookies 
-         res.redirect(`/index/${data1.id_1}`);//using inside our website;
+         const user1=req.cookies.userdata;
+         const  data1=JSON.parse(user1);
+         res.redirect(`/index/${data1.id_1}`);
         }
         else{
           res.render('alert', { message: `Unfortunately, the password you entered doesn't match the one associated with this account. If you've forgotten your password, you can use the 'Forgot Password' option to  reset it.`,route:`login` });
@@ -367,6 +345,14 @@ app.post("/forgotusername",async(req,res)=>{
         const value={otp:pw};
         myCache.set("pw_1",JSON.stringify(value));
         const data=JSON.parse(myCache.get("pw_1"));
+        //console.log(data.otp);
+        //
+        /*const passwordCache = {
+          pw_1:pw
+        };
+        const updatedData = JSON.stringify(passwordCache);
+        res.cookie('passwordCache1', updatedData);
+         console.log('cookies have added succesfuuly');*/
       const user=await UserDetails.findOne({username:username});
       if(user)
       {
@@ -1083,8 +1069,13 @@ app.post('/sendtracklink',async(req, res) => {
 
 app.get('/logout', (req, res) => {
   // Clear the session
-  res.clearCookie('username1');
-    res.redirect('/');
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+    }
+    // Redirect the user to the login page
+    res.redirect('/login'); // Change to your login page URL
+  });
 });
 
 /*app.listen(3000, () => {
