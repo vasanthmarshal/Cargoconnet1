@@ -559,7 +559,7 @@ app.get('/index/:id',(req, res) => {
       })
       .catch((err) => {
         console.log(err);
-        res.render('alert', { message: `Oops! It seems there was an issue with your posting your load. Please double-check your information and try posting the load again.`,route:`poatload` });
+        res.render('alert', { message: `Oops! It seems there was an issue with your posting your load. Please double-check your information and try posting the load again.`,route:`postload` });
       });
   });
 
@@ -589,7 +589,7 @@ app.get('/index/:id',(req, res) => {
       })
       .catch((err) => {
         console.log(err);
-        res.render('alert', { message: `Oops! It seems there was an issue with your posting your truck. Please double-check your information and try posting the Truck again.`,route:`poattruck` });
+        res.render('alert', { message: `Oops! It seems there was an issue with your posting your truck. Please double-check your information and try posting the Truck again.`,route:`posttruck` });
       });
   });
 
