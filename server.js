@@ -23,6 +23,7 @@ const querystring = require('querystring');
 const alert = require('alert-node');
 const NodeCache=require('node-cache');
 const bcrypt = require('bcrypt');
+const { cache } = require('ejs');
 
 
 
@@ -56,6 +57,7 @@ app.use(require("express-session")({
     resave: false,
     saveUninitialized: false
 }));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -91,10 +93,46 @@ app.use(cookieParser());
 
 
 //main page
-app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, './views/main.html'));
+app.get('/', async function(req, res) {
+  var usernameCookie = await req.cookies.username1;
+  if(usernameCookie)
+  {
+         try{
+
+         const user=await UserDetails.findOne({ username:usernameCookie});
+         res.cookie('usernamec1', user.username, { maxAge: 1 * 24 * 60 * 60 * 1000 });
+         res.cookie('emailc1', user.email, { maxAge: 1 * 24 * 60 * 60 * 1000 });
+         res.cookie('phonec1', user.phone, { maxAge: 1 * 24 * 60 * 60 * 1000 });
+         res.cookie('idc1', user._id, { maxAge: 1 * 24 * 60 * 60 * 1000 });
+         const idc1=req.cookies.username1;
+         /*cache.set('usernamec1',user.username,86400);
+         cache.set('emailc1',user.email,86400);
+         cache.set('phonec1',user.phone,86400);
+         cache.set('idc1',user._id,86400);
+         const idc1=cache.get('idc1');*/
+         console.log(req.cookies.idc1);
+         console.log(req.cookies.usernamec1);
+         console.log(req.cookies.emailc1);
+         console.log(req.cookies.phonec1);
+         res.redirect(`/index/${idc1}`);//using inside our website;
+         }
+         catch(err){
+          res.render('alert', { message: `login required`,route:`login` });
+         }       
+  }
+  else
+  {
+    res.redirect('/main');
+  }
 });
 //end of main page
+
+app.get('/main', function(req, res) {
+  res.sendFile(path.join(__dirname, './views/main.html'));
+});
+
+
+
 
 
 
@@ -190,7 +228,7 @@ try{
       const newUser = await withTimeout(new UserDetails({ username:username, email:email,phone:phone,password:hashedpassword }),30000);
       newUser.save() 
       .then(() => {
-          res.redirect('/login');
+        res.render('success', { message: `Welcome to Cargo connect You have been Successfully Registered`,route:`login` });
         })
         .catch((err) => {
           console.log(err);
@@ -227,6 +265,7 @@ app.get('/login', function(req, res) {
 app.post('/login',async(req, res)=> {
     const username = req.body.username;
     const password = req.body.password;
+    const remember=req.body.remember;
 
     try{
       const withTimeout = (promise, ms) => {
@@ -244,9 +283,12 @@ app.post('/login',async(req, res)=> {
      if(user) {
         const result = await bcrypt.compare(password,user.password);
         if(result)
+        {  
+        if(remember==='on')
         {
-
-        const data = {
+          res.cookie('username1', username, { maxAge: 1 * 24 * 60 * 60 * 1000 }); 
+        }
+        /*const data = {
           name_1 :user.username,
           email_1:user.email,
           id_1:user._id,
@@ -257,9 +299,18 @@ app.post('/login',async(req, res)=> {
 
         res.cookie('userdata', serializedData);
         console.log('Cookies are set');
-         const user1=req.cookies.userdata;
-         const  data1=JSON.parse(user1);
-         res.redirect(`/index/${data1.id_1}`);
+         const user1=req.cookies.userdata;//getting the data from cookie
+         const  data1=JSON.parse(user1);//parsing the cookies */
+         res.cookie('usernamec1', user.username, { maxAge: 1 * 24 * 60 * 60 * 1000 });
+         res.cookie('emailc1', user.email, { maxAge: 1 * 24 * 60 * 60 * 1000 });
+         res.cookie('phonec1', user.phone, { maxAge: 1 * 24 * 60 * 60 * 1000 });
+         res.cookie('idc1', user._id, { maxAge: 1 * 24 * 60 * 60 * 1000 });
+         //cache.set('usernamec1',user.username,86400);
+         //cache.set('emailc1',user.email,86400);
+         //cache.set('phonec1',user.phone,86400);
+         //cache.set('idc1',user._id,86400);
+         const idc1=cache.get('idc1',86400);
+         res.redirect(`/index/${idc1}`);
         }
         else{
           res.render('alert', { message: `Unfortunately, the password you entered doesn't match the one associated with this account. If you've forgotten your password, you can use the 'Forgot Password' option to  reset it.`,route:`login` });
@@ -318,7 +369,7 @@ app.post("/forgotusername",async(req,res)=>{
             console.log('mail.send',info);
           }
         })
-        res.render('alert', { message: `We've sent your username to the email address you registered with. Please check your inbox`,route:`login` });
+        res.render('success', { message: `We've sent your username to the email address you registered with. Please check your inbox`,route:`login` });
       }
       else{
         res.render('alert', { message: `The email address entered is not yet registered. Please provide a valid and registered email address to proceed.`,route:`forgotusername` });
@@ -345,14 +396,6 @@ app.post("/forgotusername",async(req,res)=>{
         const value={otp:pw};
         myCache.set("pw_1",JSON.stringify(value));
         const data=JSON.parse(myCache.get("pw_1"));
-        //console.log(data.otp);
-        //
-        /*const passwordCache = {
-          pw_1:pw
-        };
-        const updatedData = JSON.stringify(passwordCache);
-        res.cookie('passwordCache1', updatedData);
-         console.log('cookies have added succesfuuly');*/
       const user=await UserDetails.findOne({username:username});
       if(user)
       {
@@ -382,7 +425,7 @@ app.post("/forgotusername",async(req,res)=>{
             console.log('mail send',info);
           }
         })
-        res.render('alert', { message: `The OTP has been sent to the email address associated with this username. Please check your inbox for the verification code.`,route:`forgotpassword` });
+        res.render('success', { message: `The OTP has been sent to the email address associated with this username. Please check your inbox for the verification code.`,route:`forgotpassword` });
       }
       else{
         res.render('alert', { message: `Please enter the correct username to proceed`,route:`forgotpasswordotp` });
@@ -445,15 +488,9 @@ app.post("/forgotpassword",async(req,res)=>
 
 
 app.get('/index/:id',(req, res) => {
-      //getting data from express session
-      //const name=req.session.name;
-      //const id=req.session.id;
-      //console.log(id);
-      //console.log(name);
-      //end of the page
-      const user=req.cookies.userdata;
-      const  data=JSON.parse(user);
-      res.render('index', { username:data.name_1,id:data.id_1});  
+      const username=req.cookies.usernamec1;
+      const idc1=req.cookies.idc1;
+      res.render('index', { username:username,id:idc1});  
   });
 
 
@@ -509,10 +546,8 @@ app.get('/index/:id',(req, res) => {
         console.log('mail.send',info);
       }
     })
-    const user=req.cookies.userdata;
-    const  data=JSON.parse(user);
-
-    res.redirect(`/index/${data.id_1}`);
+    const idc1=req.cookies.idc1;
+    res.redirect(`/index/${idc1}`);
 
   });
 
@@ -524,24 +559,20 @@ app.get('/index/:id',(req, res) => {
 
   //starting of posting a load route
   app.get("/postload",(req,res)=>{
-    //const id=req.session.id;
-    //console.log(id);
-    const user=req.cookies.userdata;
-    const  data=JSON.parse(user);
-    res.render('postload',{id:data.id_1});
+    
+    const idc1=req.cookies.idc1;
+    res.render('postload',{id:idc1});
   });
 
   app.post('/postload',(req,res)=>{
 
-    //const id=req.session.id;
-    const user=req.cookies.userdata;
-    const  data=JSON.parse(user);
     const {fromloc,toloc,loadtype,quantity,price,description,phone}=req.body;
     console.log(fromloc+toloc+loadtype+quantity+price+description+phone);
     const newload= new PostLoad({fromlocation:fromloc,tolocation:toloc,loadtype:loadtype,quantity:quantity,price:price,description:description,phone:phone});
     newload.save() 
     .then(() => {
-        res.redirect(`/index/${data.id_1}`);
+      const idc1=req.cookies.idc1;
+      res.render('success', { message: `Your loads has been posted Succesfully`,route:`index/${idc1}` });
       })
       .catch((err) => {
         console.log(err);
@@ -555,23 +586,21 @@ app.get('/index/:id',(req, res) => {
   app.get("/posttruck",(req,res)=>{
     //const id=req.session.id;
     //console.log(id);
-    const user=req.cookies.userdata;
-    const  data=JSON.parse(user);
-    res.render('posttruck',{id:data.id_1});
+    const idc1=req.cookies.idc1;
+    res.render('posttruck',{id:idc1});
   });
 
   app.post('/posttruck',(req,res)=>{
    
 
     //const id=req.session.id;
-    const user=req.cookies.userdata;
-    const  data=JSON.parse(user);
     const {curloc,toloc,vehnumber,phone,vehtype,capacity}=req.body;
     console.log(curloc+toloc+vehnumber+phone+vehtype+capacity);
     const newtruck= new PostTruck({currentlocation:curloc,tolocation:toloc,vehiclenumber:vehnumber,phone:phone,vehicletype:vehtype,capacity:capacity});
     newtruck.save() 
     .then(() => {
-        res.redirect(`/index/${data.id_1}`);
+      const idc1=req.cookies.idc1;
+      res.render('success', { message: `Your Truck has been posted Succesfully`,route:`index/${idc1}` });
       })
       .catch((err) => {
         console.log(err);
@@ -588,15 +617,13 @@ app.get('/index/:id',(req, res) => {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const loads = await PostLoad.find({ createdAt: { $gte: sevenDaysAgo } });
-    const user=req.cookies.userdata;
-    const data=JSON.parse(user);
-    res.render('bookload',{id:data.id_1,loads:loads});
+    const idc1=req.cookies.idc1;
+    res.render('bookload',{id:idc1,loads:loads});
     }
     catch (err) {
       console.log(err);
-        const user=req.cookies.userdata;
-        const  data=JSON.parse(user);
-        res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${data.id_1}` });  
+      const idc1=req.cookies.idc1;
+        res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${idc1}` });  
     }
   });
 
@@ -644,9 +671,8 @@ app.get('/index/:id',(req, res) => {
   catch(err)
   {
     console.log(err);
-        const user=req.cookies.userdata;
-        const  data=JSON.parse(user);
-        res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${data.id_1}` });
+    const idc1=req.cookies.idc1;
+        res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${idc1}` });
   }
   });
 
@@ -667,15 +693,13 @@ app.get("/booktruck",async(req,res)=>{
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const trucks = await PostTruck.find({ createdAt: { $gte: sevenDaysAgo } });
-    const user=req.cookies.userdata;
-    const  data=JSON.parse(user);
-    res.render('booktruck',{id:data.id_1,trucks:trucks});
+    const idc1=req.cookies.idc1;
+    res.render('booktruck',{id:idc1,trucks:trucks});
     }
     catch (err) {
         console.log(err);
-        const user=req.cookies.userdata;
-        const  data=JSON.parse(user);
-        res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${data.id_1}` });
+        const idc1=req.cookies.idc1;
+        res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${idc1}` });
     }
   });
 
@@ -729,9 +753,8 @@ app.get("/booktruck",async(req,res)=>{
   catch(err)
   {
     console.log(err);
-        const user=req.cookies.userdata;
-        const  data=JSON.parse(user);
-        res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${data.id_1}` });
+        const idc1=req.cookies.idc1;
+        res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${idc1}` });
   }
   });
 
@@ -743,13 +766,17 @@ app.get("/booktruck",async(req,res)=>{
 
   //start of connecting end to end customers
   app.get('/contact/:phone', (req, res) => {
-    const user=req.cookies.userdata;
-    const  data=JSON.parse(user);
-
+    try{
+    const usernamec1=req.cookies.usernamec1;
     const phoneNumber =`${req.params.phone}`; // Replace with your phone number
-    const message = `Hello this is  ${data.name_1}`; // Replace with your message
+    const message = `Hello this is  ${usernamec1}`; // Replace with your message
     const url = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
     res.redirect(url);
+    }
+    catch (e) {
+      const idc1=req.cookies.idc1;
+        res.render('alert', { message: `Sorry there is some connectivity issue`,route:`index/${idc1}` });
+    }
 
   });
 
@@ -761,10 +788,9 @@ app.get("/booktruck",async(req,res)=>{
  //code is working perfectly
 
   app.all('/whatsup', (req, res) => {
-    const user=req.cookies.userdata;
-    const  data=JSON.parse(user);
+    const usernamec1=req.cookies.usernamec1;
     const phoneNumber = '7397106325'; // Replace with your phone number
-    const message = `Hello this is ${data.name_1}`; // Replace with your message
+    const message = `Hello this is ${usernamec1}`; // Replace with your message
     const url = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
     res.redirect(url);
   });
@@ -786,9 +812,8 @@ app.get("/booktruck",async(req,res)=>{
 
 
 app.get('/booking', function(req, res) {
-  const user=req.cookies.userdata;
-  const  data=JSON.parse(user);
-   res.render('booking',{id:data.id_1});
+  const idc1=req.cookies.idc1;
+   res.render('booking',{id:idc1});
   });
 
 
@@ -900,9 +925,8 @@ axios.get(apiUrl)
   })
   .catch((error) => {
     console.log(error);
-        const user=req.cookies.userdata;
-        const  data=JSON.parse(user);
-        res.render('alert', { message: `please enter a valid city name`,route:`index/${data.id_1}` });
+        const idc1=req.cookies.idc1;
+        res.render('alert', { message: `please enter a valid city name`,route:`index/${idc1}` });
   });
 
 
@@ -998,13 +1022,12 @@ app.get('/enterlink',(req,res)=>
 app.post('/enterlink',async(req,res)=>
 {
     //const id=req.session.id;
-    const user=req.cookies.userdata;
-    const  data=JSON.parse(user);
+    const idc1=req.cookies.idc1;
     const {loadid,tracklink}=req.body;
     const newtrack= await new Track({loadid,tracklink});
     newtrack.save() 
     .then(() => {
-        res.redirect(`/index/data.id_1`);
+        res.redirect(`/index/${idc1}`);
       })
       .catch((err) => {
         console.log(err);
@@ -1015,17 +1038,18 @@ app.post('/enterlink',async(req,res)=>
 //send the link through wgatsup if corresct customer id
 
 app.post('/sendtracklink',async(req, res) => {
-  const user=req.cookies.userdata;
-  const  data=JSON.parse(user);
+  
   var {loadid,phone}=req.body;
   try{
     const user=await Track.findOne({ loadid:loadid});
     console.log(user);
+    console.log(req.cookies.idc1);
+         console.log(req.cookies.usernamec1);
+         console.log(req.cookies.emailc1);
+         console.log(req.cookies.phonec1);
+
     if(user) {
-
-     
-    
-
+      var emailc1=req.cookies.emailc1;
       const transporter=nodemailer.createTransport({
         service:'gmail',
         auth:{
@@ -1033,10 +1057,9 @@ app.post('/sendtracklink',async(req, res) => {
           pass:process.env.PASSWORD1
         }
       });
-  
       const option1={
         from:'vasanthmarshal2020@gmail.com',
-        to:`${data.email_1}`,
+        to:`${emailc1}`,
         subject:`From SMT Transport Manapparai `,
         text:`your traking link ${user.tracklink}`
       };
@@ -1045,22 +1068,25 @@ app.post('/sendtracklink',async(req, res) => {
       {
         if(error)
         {
-          console.log(error);
+        const idc1=req.cookies.idc1;
+        res.render('alert', { message: `There is some issue in sending the Mail,please go back and try again`,route:`index/${idc1}` });
         }
         else{
-          res.redirect(`/index/${data.id_1}`)
+        const idc1=req.cookies.idc1;
+        res.render('success',{ message: `The tracking link of this loadid is send to your email registered with this account`,route:`index/${idc1}` });
         }
       })
-
     
      }
      else
      {
-       res.send("error");
+      const idc1=req.cookies.idc1;
+      res.render('alert', { message: `Load Id not found Please enter the correct load id given by SMT transport,Please go back and try again`,route:`index/${idc1}` });
      }
    }
      catch(err) {
-      res.send(error);
+      const idc1=req.cookies.idc1;
+        res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${idc1}` });
      }
 })
 
@@ -1068,21 +1094,15 @@ app.post('/sendtracklink',async(req, res) => {
 //working on logout functionalities
 
 app.get('/logout', (req, res) => {
-  // Clear the session
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Error destroying session:', err);
-    }
-    // Redirect the user to the login page
-    res.redirect('/login'); // Change to your login page URL
-  });
+  res.clearCookie('username1');
+  res.clearCookie('usernamec1');
+  res.clearCookie('emailc1');
+  res.clearCookie('phonec1');
+  res.clearCookie('idc1');
+
+  res.redirect('/');
 });
 
-/*app.listen(3000, () => {
-  console.log('Server listening on port 3000');
-  console.log("this is from cargo connect");
-  
-});*/
 
 dp.then(() => {
   // Database connection is established, start the Express server
