@@ -8,7 +8,7 @@
 <body>
     <div class="loginform">
         <div class="container">
-        <form action="/postload" method="post">
+        <form action="/postload" method="post" enctype="multipart/form-data">
          <!--
             fromloc
             toloc
@@ -55,7 +55,12 @@
           <input class="phone" type="text" id="phone" name="phone" placeholder="Enter The Phone Number" onchange="this.value = this.value.toUpperCase()">
           <br>
 
-          <input class="btn btn-2" type="submit" value="Submit" id="btn1">
+          <label for="photo">Upload Photo</label>
+                <br>
+                <input type="file" id="photo" name="photo" accept="image/*">
+                <br>
+
+          <input class="btn btn-2" type="submit" value="Submit" id="btn1" >
         </form>
               
         </div>    
