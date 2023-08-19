@@ -24,6 +24,13 @@ const alert = require('alert-node');
 const NodeCache=require('node-cache');
 const bcrypt = require('bcrypt');
 const { cache } = require('ejs');
+const multer=require('multer');
+
+
+
+
+//Creating instance of multer
+const upload=multer();
 
 
 
@@ -104,7 +111,7 @@ app.get('/', async function(req, res) {
          res.cookie('emailc1', user.email, { maxAge: 1 * 24 * 60 * 60 * 1000 });
          res.cookie('phonec1', user.phone, { maxAge: 1 * 24 * 60 * 60 * 1000 });
          res.cookie('idc1', user._id, { maxAge: 1 * 24 * 60 * 60 * 1000 });
-         const idc1=req.cookies.username1;
+         const idc1=req.cookies.idc1;
          /*cache.set('usernamec1',user.username,86400);
          cache.set('emailc1',user.email,86400);
          cache.set('phonec1',user.phone,86400);
@@ -153,15 +160,13 @@ function generateOTP() {
 
 //Oce user filles all the information along post request (enteredinfo+otp+otppage is send)
 app.post('/send-otp', async (req, res) => {
-  const { username, email,phone, password} = req.body;
+  var { username, email,phone, password} = req.body;
   try{
   const user=await UserDetails.findOne({ email:email})
     if(user) {
       res.render('alert', { message: `it seems that the email address you've provided (${email}) is already registered with us. If this is your email, please proceed to the login page to access your account.
       If you've forgotten your username or password, you can use the 'Forgot Username' and 'Forgot Password' option on the login page to reset it.`,route:`signup` });
-      //alert(`it seems that the email address you've provided (${email}) is already registered with us. If this is your email, please proceed to the login page to access your account.
-      //If you've forgotten your password, you can use the 'Forgot Password' option on the login page to reset it.`);
-      //res.redirect('/signup');
+
     }
     else{
 
@@ -202,8 +207,7 @@ app.post('/send-otp', async (req, res) => {
   }
 });
 
-//handling form submission 
-//once the otp is send all the information is  all the information are proceessed and send
+//The Otp is send to the registered email to check whether entered email is correct
 app.post('/verify-otp', async function(req, res) {
     const {otp,username, email,phone, password,enteredotp} = req.body;
 
@@ -564,12 +568,37 @@ app.get('/index/:id',(req, res) => {
     res.render('postload',{id:idc1});
   });
 
-  app.post('/postload',(req,res)=>{
+  app.post('/postload',upload.single('photo'),async(req,res)=>{
+    try {
+      if (!req.file) {
+        
+    const {fromloc,toloc,loadtype,quantity,price,description,phone}=req.body;
+    const userid=req.cookies.idc1;
+    console.log(fromloc+toloc+loadtype+quantity+price+description+phone);
+    const newload= new PostLoad({userid:userid,fromlocation:fromloc,tolocation:toloc,loadtype:loadtype,quantity:quantity,price:price,description:description,phone:phone});
+    await newload.save() 
+    .then(() => {
+      const idc1=req.cookies.idc1;
+      res.render('success', { message: `Your loads has been posted Succesfully`,route:`index/${idc1}` });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.render('alert', { message: `Oops! It seems there was an issue with your posting your load. Please double-check your information and try posting the load again.`,route:`postload` });
+      });  
+      }
+      else
+      {
+        const uploadedFile = req.file;
+      var photoData = {
+        data: uploadedFile.buffer,
+        contentType: uploadedFile.mimetype
+      };
 
     const {fromloc,toloc,loadtype,quantity,price,description,phone}=req.body;
     console.log(fromloc+toloc+loadtype+quantity+price+description+phone);
-    const newload= new PostLoad({fromlocation:fromloc,tolocation:toloc,loadtype:loadtype,quantity:quantity,price:price,description:description,phone:phone});
-    newload.save() 
+    const userid=req.cookies.idc1;
+    const newload= new PostLoad({userid:userid,fromlocation:fromloc,tolocation:toloc,loadtype:loadtype,quantity:quantity,price:price,description:description,phone:phone,photo:photoData});
+    await newload.save() 
     .then(() => {
       const idc1=req.cookies.idc1;
       res.render('success', { message: `Your loads has been posted Succesfully`,route:`index/${idc1}` });
@@ -578,47 +607,71 @@ app.get('/index/:id',(req, res) => {
         console.log(err);
         res.render('alert', { message: `Oops! It seems there was an issue with your posting your load. Please double-check your information and try posting the load again.`,route:`postload` });
       });
+
+    }
+
+    } catch (error) {
+      res.render('alert', { message: `Oops! It seems there was an issue with your posting your load. Please double-check your information and try posting the load again.`,route:`postload` });
+      //res.status(400).send('An error occurred during file upload.');
+    }
   });
 
-  //end of posting a load route
+  app.post('/posttruck',upload.single('photo'),async(req,res)=>{
+    
+    try {
+      if (!req.file) {
+        const userid=req.cookies.idc1;
+      const {curloc,toloc,vehnumber,phone,vehtype,capacity}=req.body;
+      console.log(curloc+toloc+vehnumber+phone+vehtype+capacity);
+      const newtruck= new PostTruck({userid:userid,currentlocation:curloc,tolocation:toloc,vehiclenumber:vehnumber,phone:phone,vehicletype:vehtype,capacity:capacity});
+      newtruck.save() 
+      .then(() => {
+        const idc1=req.cookies.idc1;
+        res.render('success', { message: `Your Truck has been posted Succesfully`,route:`index/${idc1}` });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.render('alert', { message: `Oops! It seems there was an issue with your posting your truck. Please double-check your information and try posting the Truck again.`,route:`posttruck` });
+        });
+      }
+      else
+      {
+      const uploadedFile = req.file;
+      var photoDat= {
+        data: uploadedFile.buffer,
+        contentType: uploadedFile.mimetype
+      };
 
-  //starting of posting a truckroute
-  app.get("/posttruck",(req,res)=>{
-    //const id=req.session.id;
-    //console.log(id);
-    const idc1=req.cookies.idc1;
-    res.render('posttruck',{id:idc1});
+      const userid=req.cookies.idc1;
+      const {curloc,toloc,vehnumber,phone,vehtype,capacity}=req.body;
+      console.log(curloc+toloc+vehnumber+phone+vehtype+capacity);
+      const newtruck= new PostTruck({userid:userid,currentlocation:curloc,tolocation:toloc,vehiclenumber:vehnumber,phone:phone,vehicletype:vehtype,capacity:capacity, photo:photoDat});
+      newtruck.save() 
+      .then(() => {
+        const idc1=req.cookies.idc1;
+        res.render('success', { message: `Your Truck has been posted Succesfully`,route:`index/${idc1}` });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.render('alert', { message: `Oops! It seems there was an issue with your posting your truck. Please double-check your information and try posting the Truck again.`,route:`posttruck` });
+        });
+  
+    }
+  
+    } catch (error) {
+      res.render('alert', { message: `Oops! It seems there was an issue with your posting your load. Please double-check your information and try posting the load again.`,route:`postload` });
+      //res.status(400).send('An error occurred during file upload.');
+    }
   });
 
-  app.post('/posttruck',(req,res)=>{
-   
 
-    //const id=req.session.id;
-    const {curloc,toloc,vehnumber,phone,vehtype,capacity}=req.body;
-    console.log(curloc+toloc+vehnumber+phone+vehtype+capacity);
-    const newtruck= new PostTruck({currentlocation:curloc,tolocation:toloc,vehiclenumber:vehnumber,phone:phone,vehicletype:vehtype,capacity:capacity});
-    newtruck.save() 
-    .then(() => {
-      const idc1=req.cookies.idc1;
-      res.render('success', { message: `Your Truck has been posted Succesfully`,route:`index/${idc1}` });
-      })
-      .catch((err) => {
-        console.log(err);
-        res.render('alert', { message: `Oops! It seems there was an issue with your posting your truck. Please double-check your information and try posting the Truck again.`,route:`posttruck` });
-      });
-  });
-
-  //end of posting a truck route
-
-
-  //starting of bboking a load
   app.get("/bookload",async(req,res)=>{
     try{
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const loads = await PostLoad.find({ createdAt: { $gte: sevenDaysAgo } });
     const idc1=req.cookies.idc1;
-    res.render('bookload',{id:idc1,loads:loads});
+    res.render('bookload',{idc1:idc1,loads:loads});
     }
     catch (err) {
       console.log(err);
@@ -627,7 +680,19 @@ app.get('/index/:id',(req, res) => {
     }
   });
 
+  app.get("/deleteload/:loadid",async(req,res) => {
+    try{
+      const loadid=req.params.loadid;
+      const result = await PostLoad.deleteOne({_id: loadid });
+      res.render('success', { message: `Your Load has Been deleted successfully`,route:`bookload`})
+      }
+      catch (err) {
+        console.log(err);
+        const idc1=req.cookies.idc1;
+          res.render('alert', { message: `There is error in delteing you data`,route:`bookload` });  
+      }
 
+  });
 
 
   //starting of filtering loading
@@ -665,8 +730,9 @@ app.get('/index/:id',(req, res) => {
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
       loads = await PostLoad.find({fromlocation:fromlocation,tolocation:tolocation,createdAt: { $gte: sevenDaysAgo } });
     }
+    const idc1=req.cookies.idc1;
     
-    res.render('bookload',{loads:loads});
+    res.render('bookload',{loads:loads,idc1:idc1});
   }
   catch(err)
   {
@@ -676,15 +742,16 @@ app.get('/index/:id',(req, res) => {
   }
   });
 
+//end
 
-  //end of filtering loading
+  
 
-
-  //end of booking truck route
-
-
-
-
+  
+  //starting of posting a truckroute
+  app.get("/posttruck",(req,res)=>{
+    const idc1=req.cookies.idc1;
+    res.render('posttruck',{id:idc1});
+  });
 
   //starting of bboking a truckroute
 app.get("/booktruck",async(req,res)=>{
@@ -694,13 +761,42 @@ app.get("/booktruck",async(req,res)=>{
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const trucks = await PostTruck.find({ createdAt: { $gte: sevenDaysAgo } });
     const idc1=req.cookies.idc1;
-    res.render('booktruck',{id:idc1,trucks:trucks});
+    res.render('booktruck',{idc1:idc1,trucks:trucks});
     }
+
     catch (err) {
         console.log(err);
         const idc1=req.cookies.idc1;
         res.render('alert', { message: `Oops! It seems there was an issue with fetching the data. Please Go back and try again`,route:`index/${idc1}` });
     }
+  });
+
+  app.get("/deleteload/:loadid",async(req,res) => {
+    try{
+      const loadid=req.params.loadid;
+      const result = await PostLoad.deleteOne({_id: loadid });
+      res.render('success', { message: `Your Load has Been deleted successfully`,route:`bookload`})
+      }
+      catch (err) {
+        console.log(err);
+        const idc1=req.cookies.idc1;
+          res.render('alert', { message: `There is error in delteing you data`,route:`bookload` });  
+      }
+
+  });
+
+  app.get("/deletetruck/:truckid",async(req,res) => {
+    try{
+      const truckid=req.params.truckid;
+      const result = await PostTruck.deleteOne({_id:truckid });
+      res.render('success', { message: `Your Load has Been deleted successfully`,route:`booktruck`})
+      }
+      catch (err) {
+        console.log(err);
+        const idc1=req.cookies.idc1;
+          res.render('alert', { message: `There is error in delteing you data`,route:`booktruck`});  
+      }
+
   });
 
 
@@ -748,7 +844,8 @@ app.get("/booktruck",async(req,res)=>{
         createdAt: { $gte: sevenDaysAgo }
       });
     }
-    res.render('booktruck',{trucks:trucks});
+    const idc1=req.cookies.idc1;
+    res.render('booktruck',{trucks:trucks,idc1:idc1});
   }
   catch(err)
   {
@@ -1008,7 +1105,6 @@ app.get('/getfuelprice/:stateId/:cityId',async(req,res)=>{
   } catch (error) {
     res.redirect('/getfuelprice');
   }
-
 });
 //end of get fuel price by city
 
