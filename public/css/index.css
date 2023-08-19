@@ -378,9 +378,26 @@ label{
 {
   background-color:#FF7F3F;
   display:flex;
+  flex-direction:column;
+  height: 200px;
+}
+.listbook
+{
+  display:flex;
+  flex-direction:row;
   justify-content:space-around;
   align-items:center;
   height: 200px;
+}
+
+.notifylist{
+  display:flex;
+  flex-direction: row;
+  color:black;
+  font-weight:900;
+  justify-content: end;
+
+
 }
 
 .book-now {
