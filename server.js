@@ -313,7 +313,7 @@ app.post('/login',async(req, res)=> {
          //cache.set('emailc1',user.email,86400);
          //cache.set('phonec1',user.phone,86400);
          //cache.set('idc1',user._id,86400);
-         const idc1=cache.get('idc1',86400);
+         const idc1=req.cookies.idc1;
          res.redirect(`/index/${idc1}`);
         }
         else{
