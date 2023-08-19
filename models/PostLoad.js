@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const postload = new mongoose.Schema({
+  userid:{type: String, required: true},
   fromlocation: { type: String, required: true },
   tolocation: { type: String, required: true },
   loadtype: { type: String, required: true },
@@ -10,8 +11,8 @@ const postload = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now  // Set the default value to the current timestamp
-  }
-  
+  },
+  photo: { data: Buffer, contentType: String }
 });
 
 //PostLoad.plugin(passportLocalMongoose);
