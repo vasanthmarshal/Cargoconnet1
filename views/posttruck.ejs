@@ -16,7 +16,7 @@
           vehtype
           capacity
         -->
-        <form action="/posttruck" method="post">
+        <form action="/posttruck" method="post" enctype="multipart/form-data">
                 <h2>Post Truck form</h2>
           <label for="curtloc">Current location</label>
           <br>
@@ -59,6 +59,11 @@
             <option class="select" value="9-10">9-10</option>
             <option class="select" value="more than 20">more than 10</option>
           </select>
+          <br>
+
+          <label for="photo">Upload Photo</label>
+          <br>
+          <input type="file" id="photo" name="photo" accept="image/*">
           <br>
  
           <input class="btn btn-2" type="submit" value="Submit" id="btn1">
