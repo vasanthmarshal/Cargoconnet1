@@ -114,3 +114,75 @@ input[type="submit"]:hover {
   transform: translateY(-2px);
 }
 
+.delete-now {
+  background-color:red; /* Change the background color to your desired color */
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease-in-out;
+}
+
+.delete-now:hover {
+  background-color: #3e8e41; /* Change the background color to your desired hover color */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+
+.show-image-button{
+  background-color: #0002A1; /* Change the background color to your desired color */
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease-in-out;
+}
+
+.show-image-button:hover {
+  background-color: #3e8e41; /* Change the background color to your desired hover color */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+#image-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Make sure the overlay is on top */
+}
+
+#overlay-image {
+  max-width: 90%; /* Adjust image size as needed */
+  max-height: 90vh; /* Adjust image height as needed */
+}
+
+#close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border:2px solid black;
+  color:red;
+  font-weight: bolder;
+  background-color:white;
+  cursor: pointer;
+  font-size: 18px;
+}
