@@ -721,7 +721,6 @@ app.get('/index/:id',(req, res) => {
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
       loads = await PostLoad.find({createdAt: { $gte: sevenDaysAgo } });
-
     }
 
     else
@@ -999,11 +998,8 @@ app.post('/bookloadsmt/:id',async(req,res) => {
       console.log('mail.send',info);
     }
   })
+  res.render('success', { message: `Thank you for choosing our services,Our team will review your request and get back to you soon.`,route:`index/${req.params.id}` });
 
-  
-
-
-    res.redirect(`/index/${req.params.id}`)
          
 }
 );
@@ -1100,10 +1096,9 @@ app.get('/getfuelprice/:stateId/:cityId',async(req,res)=>{
   try {
     const response = await axios.request(options);
     console.log(response.data);
-    //res.send(response.data);
     res.render('fuelprice',{data:response.data});
   } catch (error) {
-    res.redirect('/getfuelprice');
+    res.render('success', { message: `I apologize for any inconvenience caused. Unfortunately, the fuel prices for the city you entered is currently unavailable.`,route:`getfuelprice` });
   }
 });
 //end of get fuel price by city
