@@ -376,7 +376,7 @@ label{
 }
 .book-container
 {
-  background-color:#FF7F3F;
+  background-color:white;
   display:flex;
   flex-direction:column;
   height: 350px;
@@ -393,10 +393,14 @@ label{
 .notifylist{
   display:flex;
   flex-direction: row;
-  color:black;
-  font-weight:900;
   justify-content: end;
+}
 
+p{
+  color:red;
+  font-family: Montserrat-bold;
+  font-style: italic;
+  font-weight: bold;
 
 }
 
@@ -434,7 +438,8 @@ label{
 .fuel-container
 {
   width:70%;
-  background-color:#F97B22;
+  background-image: url("../images/fuelbg.jpg");
+  background-size: cover;
   display:flex;
   justify-content:space-around;
   align-items:center;
